@@ -1,0 +1,8 @@
+%h4 Мои карты
+-if @map.present? && @map.errors
+  -flash.each do |key, value|
+    %div(class="alert-#{key}")=value
+=form_for @map do |f|
+  %p=f.label "Название карты"
+  %p=f.text_field :title
+  %p=f.submit "Редактировать карту"

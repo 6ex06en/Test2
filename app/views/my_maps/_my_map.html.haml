@@ -1,0 +1,5 @@
+%tr
+  %td=link_to my_map.title, my_map
+  %td 
+    =link_to "Редактировать", edit_my_map_path(my_map)
+    =link_to "Удалить", my_map, confirm: "Удалить карту?", method: :delete
