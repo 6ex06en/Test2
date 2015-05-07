@@ -6,16 +6,20 @@ class MyMapsController < ApplicationController
 
   def show
     @map = MyMap.find(params[:id])
-    @marker = @map.markers.build
     @markers = @map.markers
+    @hash = Gmaps4rails.build_markers(@markers) do |marker, coords|
+      coords.lat marker.latitude
+      coords.lng marker.longitude
+    end
   end
 
   def create
     @map = MyMap.new(map_params)
     if @map.save
-      redirect_to root_path, notice: "Success!"
+      flash[:success] = "Success!"
+      redirect_to root_path
     else
-      flash.now[:error] = "Map name"
+      flash.now[:error] = "Map's name can't be empty"
       render "index"
     end 
   end
@@ -38,6 +42,22 @@ class MyMapsController < ApplicationController
     else
       flash.now[:error] = "Map's name can't be blank"
       render 'edit'
+    end
+  end
+
+  def send_mail
+    @person = Person.new(name: params[:name], phone: params[:phone], email: params[:email])
+    map = MyMap.find(params[:my_map_id])
+    link = request.original_url 
+    respond_to do |format|
+      if @person.save
+        flash.now[:success] = "Map link was sent to your email"             
+        format.js {}
+        format.html { redirect_ro root_path}
+        Sender.map_to_email(@person, map, link).deliver     
+      else
+        format.js { render :status => 422, json: {:errors => @person.errors.full_messages} } 
+      end
     end
   end
 

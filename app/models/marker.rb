@@ -3,4 +3,6 @@ class Marker < ActiveRecord::Base
   geocoded_by :address
   after_validation :geocode
   belongs_to :my_maps
+  validates :title, presence:true, uniqueness: true
+  validates :latitude, presence:true
 end

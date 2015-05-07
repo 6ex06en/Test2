@@ -9,6 +9,10 @@ class MarkersController < ApplicationController
 			render @map
 		end 
 	end
+	def destroy
+		Marker.find(params[:id]).destroy
+		redirect_to my_map_path(params[:my_map_id])
+	end
 
 	def markers_params
 		params.require(:marker).permit(:longitude, :latitude, :title, :description)

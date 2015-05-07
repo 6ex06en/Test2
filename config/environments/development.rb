@@ -14,7 +14,6 @@ Map::Application.configure do
   config.action_controller.perform_caching = false
 
   # Don't care if the mailer can't send
-  config.action_mailer.raise_delivery_errors = false
 
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
@@ -33,5 +32,19 @@ Map::Application.configure do
   config.assets.compress = false
 
   # Expands the lines which load the assets
+  config.action_mailer.default_url_options = { :host => "localhost:3000" }
   config.assets.debug = false
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+  address:              "smtp.gmail.com",
+  port:                 465,
+  domain:               "gmail.com",
+  user_name:            "testmailrails",
+  password:             "1qa4rf2ws3ed",
+  authentication:       :plain,
+  tls:                  true,
+  ssl:                  true,
+  enable_starttls_auto: true }
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
 end

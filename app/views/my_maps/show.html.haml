@@ -1,78 +1,107 @@
 %script{src: "//maps.google.com/maps/api/js?v=3.13&sensor=false&libraries=geometry", type: "text/javascript"}
 %script{src: "//google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.0.14/src/markerclusterer_packed.js", type: "text/javascript"}
-%h1 Создание маркера
--if @markers.present?
-  %table
-    %tr
-      %th Координаты
-      %th Название
-      %th Примечания
-    =render partial: 'marker', collection: @markers
-= form_for([@map, @marker]) do |f|
-  = f.label :title, 'Название маркера'
-  = f.text_field :title
-  = f.label :description, 'Примечания к маркеру'
-  = f.text_field :description
-  #map{:style => "width: 550px; height: 350px;"}
-  = f.hidden_field :latitude, id: 'map_lat'
-  = f.hidden_field :longitude, id: 'map_lng'
-  = f.submit 'Создать'
--content_for :script do
-  :javascript
-    function gmap_form(marker) {
-      handler = Gmaps.build('Google');    // map init
-      handler.buildMap({ provider: {}, internal: {id: 'map'}}, function(){
-        if (marker && marker.lat && marker.lng) {    // statement check - new or edit view
-          markers = handler.addMarkers([    // print existent marker
-            {
-              "lat": marker.lat,
-              "lng": marker.lng,
-              "picture": {
-                "url": 'http://www.planet-action.org/img/2009/interieur/icons/orange-dot.png',
-                "width":  32,
-                "height": 32
-              },
-              "infowindow": "<b>" + marker.name + "</b> " + marker.address + ", " + marker.postal_code + " " + marker.city
-            }
-          ]);
-          handler.bounds.extendWith(markers);
-          handler.fitMapToBounds();
-          handler.getMap().setZoom(12);
-        }
-        else {    // show the empty map
-          if(navigator.geolocation)
-          navigator.geolocation.getCurrentPosition(displayOnMap);
-          function displayOnMap(position){
-            var marker = handler.addMarker({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          });
-          handler.map.centerOn(marker);
-          marker.serviceObject.visible = false;
-          };
-        }
-      });
+.row
+  %h1 Создание маркера
+  %h3 Карта: #{@map.title}
+  -if @markers.present?
+    #table_markers.table
+      %table.text-center.table
+        %tr
+          %th.text-center Координаты
+          %th.text-center Название
+          %th.text-center Примечания
+        =render partial: @markers
+  .col-md-6.col-lg-6.col-sm-12.col.xs.12
+    = form_for([@map, @map.markers.build])  do |f|
+      = f.label :title, 'Название маркера'
+      = f.text_field :title
+      = f.label :description, 'Примечания к маркеру'
+      = f.text_field :description
+      #map{:style => "width: 550px; height: 350px;"}
+      = f.hidden_field :latitude, id: 'map_lat'
+      = f.hidden_field :longitude, id: 'map_lng'
+      = f.submit 'Создать', class: "btn btn-success"
+  .col-md-6.col-lg-6.col-sm-12.col.xs.12
+    %h3 Отпправить ссыку на e-mail
+    = form_tag(my_map_send_mail_path(@map), method: :post, id: "contactForm", data: {id: params[:id]}) do
+      .row.control_group
+        .form-group.col-xs-12.floating-label-form-group.controls
+          = label_tag :name 
+          = text_field_tag :name, nil, placeholder: "Имя", class: "form-control"
+          %p.help-block.text-danger
+      .row.control_group
+        .form-group.col-xs-12.floating-label-form-group.controls
+          = label_tag :email
+          = text_field_tag :email, nil, placeholder: "E-mail", class: "form-control"
+          %p.help-block.text-danger
+      .row.control_group
+        .form-group.col-xs-12.floating-label-form-group.controls
+          = telephone_field_tag :phone, nil, placeholder: "Телефон", class: "form-control"
+          %p.help-block.text-danger
+        %br<>/
+        #success
+      .row
+        .form-group.col-xs-12
+          = submit_tag "Отправить", class: "btn btn-success btn-lg"
+  -content_for :script do
+    :javascript
+      var handler;
+      function gmap_form(marker) {
+        handler = Gmaps.build('Google');    // map init
+        handler.buildMap({ provider: {}, internal: {id: 'map'}}, function(){
+          if (marker && marker.lat && marker.lng) {    // statement check - new or edit view
+            markers = handler.addMarkers([    // print existent marker
+              {
+                "lat": marker.lat,
+                "lng": marker.lng,
+                "picture": {
+                  "url": 'http://www.planet-action.org/img/2009/interieur/icons/orange-dot.png',
+                  "width":  32,
+                  "height": 32
+                },
+                "infowindow": "<b>" + marker.name + "</b> " + marker.address + ", " + marker.postal_code + " " + marker.city
+              }
+            ]);
+            handler.bounds.extendWith(markers);
+            handler.fitMapToBounds();
+            handler.getMap().setZoom(12);
+          }
+          else {    // show the empty map
+            markers = handler.addMarkers(#{raw @hash.to_json});
+            if(navigator.geolocation)
+            navigator.geolocation.getCurrentPosition(displayOnMap);
+            function displayOnMap(position){
+              var marker = handler.addMarker({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            });
+            handler.map.centerOn(marker);
+            marker.serviceObject.visible = false;
+            };
+          }
+        });
 
-      var markerOnMap;
+        var markerOnMap;
 
-      function placeMarker(location) {    // simply method for put new marker on map
-        if (markerOnMap) {
-          markerOnMap.setPosition(location);
+        function placeMarker(location) {    // simply method for put new marker on map
+          if (markerOnMap) {
+            markerOnMap.setPosition(location);
+          }
+          else {
+            markerOnMap = new google.maps.Marker({
+              position: location,
+              map: handler.getMap()
+            });
+          }
         }
-        else {
-          markerOnMap = new google.maps.Marker({
-            position: location,
-            map: handler.getMap()
-          });
-        }
+
+        google.maps.event.addListener(handler.getMap(), 'click', function(event) {    // event for click-put marker on map and pass coordinates to hidden fields in form
+          placeMarker(event.latLng);
+          document.getElementById("map_lat").value = event.latLng.lat();
+          document.getElementById("map_lng").value = event.latLng.lng();
+        });
       }
-
-      google.maps.event.addListener(handler.getMap(), 'click', function(event) {    // event for click-put marker on map and pass coordinates to hidden fields in form
-        placeMarker(event.latLng);
-        document.getElementById("map_lat").value = event.latLng.lat();
-        document.getElementById("map_lng").value = event.latLng.lng();
+      $(document).ready(function(){
+      gmap_form(null);
       });
-    }
-    $(document).ready(function(){
-    gmap_form(null);
-    });
+    

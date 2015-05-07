@@ -1,0 +1,7 @@
+%h3 Привет, #{@person.name}!
+%p Вам пришла #{link_to "ссылка", @link} на карту #{@map.title}.
+- if @map.markers.present?
+  %p C таким точками:
+  %ul
+  - @map.markers.each do |marker|
+    %li=marker.title

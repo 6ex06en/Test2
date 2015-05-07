@@ -1,6 +1,7 @@
 Map::Application.routes.draw do
   resources :my_maps do
     resources :markers
+    post :send_mail
   end
   root to: 'my_maps#index'
   # The priority is based upon order of creation:

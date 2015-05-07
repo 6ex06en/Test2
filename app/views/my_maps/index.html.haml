@@ -1,14 +1,14 @@
-%h4 Мои карты
+%h3 Мои карты
 -if @map.errors
 	-flash.each do |key, value|
 		%div(class="alert-#{key}")=value
 -if @maps
-	%table
+	%table.table.table_maps.text-center
 		%tr
-			%th Название
-			%th Действия
+			%th.text-center Название
+			%th.text-center Действия
 		=render @maps
 =form_for @map do |f|
 	%p=f.label :title, "Название карты:"
 	%p=f.text_field :title
-	%p=f.submit "Создать карту"
+	%p=f.submit "Создать карту", class: "btn btn-default"
