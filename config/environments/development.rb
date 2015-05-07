@@ -32,8 +32,7 @@ Map::Application.configure do
   config.assets.compress = false
 
   # Expands the lines which load the assets
-  config.action_mailer.default_url_options = { :host => "localhost:3000" }
-  config.assets.debug = false
+  config.action_mailer.default_url_options = { :host => "murmuring-springs-4798.herokuapp.com" }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
   address:              "smtp.gmail.com",
