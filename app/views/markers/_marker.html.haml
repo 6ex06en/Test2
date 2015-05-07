@@ -1,5 +1,5 @@
 %tr
   %td=marker.title
-  %td.table_ltd #{marker.latitude},#{marker.longitude}
+  %td.table_ltd #{marker.latitude}, #{marker.longitude}
   %td
     %span.delete_marker.text-center=link_to "Удалить", [@map, marker], method: :delete

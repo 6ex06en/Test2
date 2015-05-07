@@ -4951,7 +4951,7 @@ a.thumbnail.active {
 .alert-success {
   background-color: #18bc9c;
   border-color: #18bc9c;
-  color: #ffffff;
+  color: grey !important;
 }
 .alert-success hr {
   border-top-color: #15a589;
@@ -4984,7 +4984,7 @@ a.thumbnail.active {
 .alert-danger {
   background-color: #e74c3c;
   border-color: #e74c3c;
-  color: #ffffff;
+  color: grey !important;
 }
 .alert-danger hr {
   border-top-color: #e43725;
