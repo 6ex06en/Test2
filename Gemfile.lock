@@ -137,6 +137,7 @@ DEPENDENCIES
   rails (= 3.2.19)
   rails_12factor (= 0.0.2)
   sass-rails (~> 3.2.3)
+  sprockets
   sqlite3
   strong_parameters
   uglifier (>= 1.0.3)

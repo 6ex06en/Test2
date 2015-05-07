@@ -21,6 +21,7 @@
       = f.hidden_field :latitude, id: 'map_lat'
       = f.hidden_field :longitude, id: 'map_lng'
       = f.submit 'Создать', class: "btn btn-success"
+      =link_to "На главную", root_path
   .col-md-6.col-lg-6.col-sm-12.col.xs.12
     %h3 Отпправить ссыку на e-mail
     = form_tag(my_map_send_mail_path(@map), method: :post, id: "contactForm", data: {id: params[:id]}) do

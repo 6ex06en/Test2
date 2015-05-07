@@ -14,6 +14,7 @@ gem 'geocoder'
 gem 'webrick', '~> 1.3.1'
 gem 'strong_parameters'
 gem 'bootstrap-sass', '~> 3.3.4'
+gem 'sprockets'
 
 
 group :production do

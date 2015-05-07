@@ -1,3 +1,4 @@
+@import "bootstrap";
 body {
 	background: white;
 }
@@ -47,6 +48,9 @@ body {
 	}
 	label {
 		min-width: 175px;
+	}
+	a {
+		margin-left: 20px;
 	}
 }
 #map {
